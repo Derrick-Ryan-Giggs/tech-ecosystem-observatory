@@ -1,0 +1,45 @@
+id: tech_observatory_pipeline
+namespace: tech.observatory
+description: |
+  End-to-end ingestion pipeline for the Tech Ecosystem Observatory.
+
+labels:
+  project: tech-ecosystem-observatory
+  env: production
+
+triggers:
+  - id: weekly_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 6 * * 1"
+
+tasks:
+  - id: ingest_layoffs
+    type: io.kestra.plugin.scripts.python.Commands
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      pullPolicy: NEVER
+      image: tech-obs-ingestion:v5
+    commands:
+      - python /app/ingest_layoffs.py
+
+  - id: ingest_yc
+    type: io.kestra.plugin.scripts.python.Commands
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      pullPolicy: NEVER
+      image: tech-obs-ingestion:v5
+    commands:
+      - python /app/ingest_yc.py
+
+  - id: verify_bigquery
+    type: io.kestra.plugin.scripts.python.Commands
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      pullPolicy: NEVER
+      image: tech-obs-ingestion:v5
+    commands:
+      - python /app/verify.py
+
+  - id: log_success
+    type: io.kestra.plugin.core.log.Log
+    message: "Tech Observatory pipeline completed successfully at {{ execution.startDate }}"

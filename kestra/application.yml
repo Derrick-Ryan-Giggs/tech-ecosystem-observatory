@@ -1,0 +1,21 @@
+datasources:
+
+  default:
+    url: jdbc:postgresql://postgres:5432/kestra
+    driverClassName: org.postgresql.Driver
+    username: kestra
+    password: kestra
+kestra:
+  repository:
+    type: postgres
+  storage:
+    type: local
+    local:
+      basePath: /app/storage
+  queue:
+    type: postgres
+  tasks:
+    defaults:
+      - type: io.kestra.plugin.scripts.runner.docker.Docker
+        values:
+          pullPolicy: NEVER
