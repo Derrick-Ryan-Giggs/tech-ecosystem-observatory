@@ -46,8 +46,8 @@ services:
           server:
             basicAuth:
               enabled: true
-              username: "admin@admin.com"
-              password: "@Rayann18"
+              username: "your username"
+              password: "your passwd"
           repository:
             type: postgres
           storage:
