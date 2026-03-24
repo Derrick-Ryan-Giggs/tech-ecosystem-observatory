@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: raw
+    database: tech-ecosystem-obs
+    schema: raw
+    tables:
+      - name: raw_layoffs_partitioned
+        description: "Layoffs data partitioned by date (monthly), clustered by industry and country"
+      - name: raw_yc_companies_partitioned
+        description: "YC companies data partitioned by ingested_at, clustered by industry and status"
+
+models:
+  - name: stg_layoffs
+    description: "Cleaned and standardized layoffs data"
+    columns:
+      - name: company
+        description: "Company name"
+      - name: industry
+        description: "Industry sector"
+      - name: country
+        description: "Country of the layoff event"
+      - name: date
+        description: "Date of the layoff event"
+      - name: total_laid_off
+        description: "Number of employees laid off"
+      - name: funds_raised
+        description: "Total funds raised by company in millions"
+
+  - name: stg_yc_companies
+    description: "Cleaned YC companies data"
+    columns:
+      - name: id
+        description: "YC company ID"
+      - name: name
+        description: "Company name"
+      - name: batch
+        description: "YC batch (e.g. W21, S22)"
+      - name: status
+        description: "Company status (active, acquired, inactive)"
+      - name: industry
+        description: "Industry sector"

@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: mart_monthly_layoffs
+    description: "Monthly aggregation of layoffs by industry and country for time-series dashboard"
+    columns:
+      - name: month
+        description: "Month of layoff events"
+      - name: industry
+        description: "Industry sector"
+      - name: country
+        description: "Country"
+      - name: num_events
+        description: "Number of layoff events in that month"
+      - name: total_laid_off
+        description: "Total employees laid off"
+      - name: total_funds_raised
+        description: "Total funds raised by companies that laid off"
+
+  - name: mart_tech_ecosystem
+    description: "Industry-level join of layoffs and YC company activity"
+    columns:
+      - name: industry
+        description: "Industry sector"
+      - name: total_laid_off
+        description: "Total employees laid off in this industry"
+      - name: total_yc_companies
+        description: "Total YC-backed companies in this industry"
+      - name: layoffs_per_yc_company
+        description: "Ratio of layoffs to YC companies"
