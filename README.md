@@ -429,4 +429,13 @@ tech-ecosystem-observatory/
 - Dev.to: [dev.to/derrickryangiggs](https://dev.to/derrickryangiggs)
 - Hashnode: [ryan-giggs.hashnode.dev](https://ryan-giggs.hashnode.dev)
 
+## Acknowledgements
+
+This project was built as the capstone for the **[Data Engineering Zoomcamp 2026](https://github.com/DataTalksClub/data-engineering-zoomcamp/)** by [DataTalksClub](https://datatalks.club/).
+
+Special thanks to **[Alexey Grigorev](https://github.com/alexeygrigorev)** and the entire DataTalksClub team for building and maintaining this free, high-quality data engineering curriculum. The course covers containerization, workflow orchestration, data warehousing, analytics engineering, batch processing, and streaming — all the tools used in this project.
+
+If you want to learn data engineering from scratch, sign up here:
+[https://github.com/DataTalksClub/data-engineering-zoomcamp/](https://github.com/DataTalksClub/data-engineering-zoomcamp/)
+
 DEZ Zoomcamp 2026 Cohort
