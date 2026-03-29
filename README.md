@@ -7,8 +7,8 @@
 **[View Dashboard on Looker Studio](https://lookerstudio.google.com/reporting/b1620cae-97cb-4911-82b8-dd0c46ee8acb)**
 
 The dashboard has two pages:
-- **Page 1 — Layoffs Trends:** Monthly trend, top industries, geo map, scorecards
-- **Page 2 — Ecosystem Health:** Stress ratio, YC company outcomes, full industry table
+- **Page 1 — Layoffs Trends:** Monthly trend, top industries by layoffs, geo map, scorecards
+- **Page 2 — Ecosystem Health:** Stress ratio by industry, YC company outcomes, scorecards
 
 ---
 
@@ -34,6 +34,20 @@ Kaggle CSV + YC API
         ▼
   Looker Studio (2-page dashboard)
 ```
+
+### Kestra Orchestration DAG
+
+The pipeline runs as a 4-task sequential DAG inside Kestra:
+
+```
+weekly_schedule → ingest_layoffs → ingest_yc → verify_bigquery → log_success
+```
+
+- `weekly_schedule` — cron trigger every Monday 6AM UTC
+- `ingest_layoffs` — reads CSV from GCS, uploads JSONL, loads to BigQuery
+- `ingest_yc` — fetches YC API, uploads JSONL, loads to BigQuery
+- `verify_bigquery` — confirms both tables have expected row counts
+- `log_success` — logs pipeline completion timestamp
 
 ---
 
@@ -180,9 +194,8 @@ raw layer (BigQuery)
 |---|---|---|---|---|
 | 6 | Horizontal bar | `layoffs_per_yc_company` | `industry` | Ecosystem stress ratio — layoffs per YC company |
 | 7 | Stacked bar | `industry` | `active_companies` + `acquired_companies` | YC company outcomes by industry |
-| 8 | Table | `industry` | all metrics | Industry-level ecosystem health breakdown |
-| 9 | Scorecard | — | `total_yc_companies` (SUM) | Total YC companies analyzed |
-| 10 | Scorecard | — | `industry` (count distinct) | Industries covered |
+| 8 | Scorecard | — | `total_yc_companies` (SUM) | Total YC companies analyzed |
+| 9 | Scorecard | — | `industry` (count distinct) | Industries covered |
 
 ---
 
@@ -206,7 +219,7 @@ cd tech-ecosystem-observatory
 ### Step 2 — Set up GCP
 
 1. Go to [console.cloud.google.com](https://console.cloud.google.com) and create a new project. Note the **Project ID**.
-2. Enable these APIs:
+2. Enable these APIs on your project:
    - BigQuery API
    - Cloud Storage API
 3. Create a service account:
@@ -258,7 +271,7 @@ gsutil cp ingestion/layoffs.csv \
   gs://YOUR_PROJECT_ID-data-lake/raw/layoffs/layoffs.csv
 ```
 
-Update the `GCS_CSV_PATH` variable in `docker/ingest_layoffs.py` to match your bucket name.
+Update the `GCS_CSV_PATH` variable in `docker/ingest_layoffs.py` to match your bucket name and file path.
 
 ### Step 6 — Build the Docker image
 
@@ -284,7 +297,7 @@ docker compose up -d
 docker compose logs -f kestra | grep -m1 "Server Running"
 ```
 
-Open [http://localhost:8080](http://localhost:8080) and complete the account setup wizard. Kestra uses a Postgres backend so your flow, credentials, and settings persist across restarts.
+Open [http://localhost:8080](http://localhost:8080) and complete the account setup wizard. Kestra uses a Postgres backend so your flow and settings persist across restarts.
 
 ### Step 8 — Register the Kestra flow
 
@@ -400,7 +413,7 @@ tech-ecosystem-observatory/
 | Batch orchestration | 4/4 | Kestra end-to-end pipeline, weekly schedule, 4-task DAG |
 | DWH partitioning + clustering | 4/4 | Both raw tables partitioned and clustered with written explanation |
 | dbt transformations | 4/4 | 4 models across staging and mart layers using dbt Cloud |
-| Dashboard | 4/4 | 2-page Looker Studio dashboard with 10 visualizations |
+| Dashboard | 4/4 | 2-page Looker Studio dashboard |
 | Reproducibility | 4/4 | Step-by-step from GCP setup to dashboard, sample data included |
 | **Total** | **28/28** | |
 
@@ -408,7 +421,12 @@ tech-ecosystem-observatory/
 
 ## Author
 
-**Ryan Derrick Giggs**
+**Ryan Derrick Giggs** — Data Engineer & Technical Writer based in Nairobi, Kenya.
+
 - GitHub: [@Derrick-Ryan-Giggs](https://github.com/Derrick-Ryan-Giggs)
+- LinkedIn: [linkedin.com/in/ryan-giggs-a19330265](https://linkedin.com/in/ryan-giggs-a19330265)
+- Medium: [medium.com/@derrickryangiggs](https://medium.com/@derrickryangiggs)
+- Dev.to: [dev.to/derrickryangiggs](https://dev.to/derrickryangiggs)
 - Hashnode: [ryan-giggs.hashnode.dev](https://ryan-giggs.hashnode.dev)
-- DEZ Zoomcamp 2026 Cohort
+
+DEZ Zoomcamp 2026 Cohort
